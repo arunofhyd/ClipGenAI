@@ -1,0 +1,18 @@
+{
+  "version": "1.0.0",
+  "downloadURL": "https://github.com/arunofhyd/ClipGenAI/releases/latest",
+  "changelog": [
+    {
+      "version": "1.0.0",
+      "date": "2026-10-14",
+      "changes": [
+        "Initial open source release of ClipGenAI.",
+        "Zero-click clipboard listener routing copied text directly to Gemini 2.5 Flash.",
+        "Floating glassmorphic HUD bubble anchored at bottom-right or top-right with auto-dismiss and pin modes.",
+        "Quick action buttons: 1-click clipboard copyback, dismiss, pin, and 6 persona switches.",
+        "Secure Gemini API Key storage via macOS Keychain (com.aoh.clipgenai) with live test verification.",
+        "Integrated In-App Update Checker with GitHub Releases and one-liner local installer."
+      ]
+    }
+  ]
+}

@@ -1,0 +1,13 @@
+# macOS system files
+.DS_Store
+._*
+
+# Build artifacts & binaries
+*.app/
+*.dSYM/
+*.zip
+ClipGenAI
+Build/
+
+# Swift compile cache
+.swiftcache*
