@@ -1854,34 +1854,7 @@ struct SettingsView: View {
                 }
                 
                 if let status = vm.testStatus {
-                    HStack(spacing: 6) {
-                        if vm.isTesting {
-                            ProgressView()
-                                .controlSize(.small)
-                            Text(status)
-                                .font(.system(size: 11, weight: .medium))
-                                .foregroundColor(.secondary)
-                        } else {
-                            Image(systemName: vm.isTestSuccess ? "checkmark.circle.fill" : "xmark.circle.fill")
-                                .foregroundColor(vm.isTestSuccess ? .green : .red)
-                                .font(.system(size: 11))
-                            Text(status)
-                                .font(.system(size: 11, weight: .medium))
-                                .foregroundColor(vm.isTestSuccess ? .green : .red)
-                                .lineLimit(2)
-                        }
-                    }
-                    .padding(.horizontal, 8)
-                    .padding(.vertical, 5)
-                    .frame(maxWidth: .infinity, alignment: .leading)
-                    .background(
-                        RoundedRectangle(cornerRadius: 6)
-                            .fill(vm.isTesting ? Color.blue.opacity(0.08) : (vm.isTestSuccess ? Color.green.opacity(0.08) : Color.red.opacity(0.08)))
-                    )
-                    .overlay(
-                        RoundedRectangle(cornerRadius: 6)
-                            .stroke(vm.isTesting ? Color.blue.opacity(0.2) : (vm.isTestSuccess ? Color.green.opacity(0.2) : Color.red.opacity(0.2)), lineWidth: 0.5)
-                    )
+                    testStatusBadge(status)
                 }
             }
             
@@ -1984,6 +1957,42 @@ struct SettingsView: View {
             }
             return id
         }
+    }
+
+    @ViewBuilder
+    private func testStatusBadge(_ status: String) -> some View {
+        let isTesting = vm.isTesting
+        let isSuccess = vm.isTestSuccess
+        let tintColor: Color = isTesting ? .blue : (isSuccess ? .green : .red)
+        
+        HStack(spacing: 6) {
+            if isTesting {
+                ProgressView()
+                    .controlSize(.small)
+                Text(status)
+                    .font(.system(size: 11, weight: .medium))
+                    .foregroundColor(.secondary)
+            } else {
+                Image(systemName: isSuccess ? "checkmark.circle.fill" : "xmark.circle.fill")
+                    .foregroundColor(tintColor)
+                    .font(.system(size: 11))
+                Text(status)
+                    .font(.system(size: 11, weight: .medium))
+                    .foregroundColor(tintColor)
+                    .lineLimit(2)
+            }
+        }
+        .padding(.horizontal, 8)
+        .padding(.vertical, 5)
+        .frame(maxWidth: .infinity, alignment: .leading)
+        .background(
+            RoundedRectangle(cornerRadius: 6)
+                .fill(tintColor.opacity(0.08))
+        )
+        .overlay(
+            RoundedRectangle(cornerRadius: 6)
+                .stroke(tintColor.opacity(0.2), lineWidth: 0.5)
+        )
     }
 }
 
@@ -2301,10 +2310,10 @@ final class AppDelegate: NSObject, NSApplicationDelegate, NSMenuDelegate {
     
     private func configureMenuItemIcon(_ item: NSMenuItem, symbolName: String) {
         if #available(macOS 27.0, *) {
-            // In macOS 27+, AppKit introduced preferredImageVisibility. By default (.automatic),
-            // it automatically injected a system gear icon on "Settings…" while leaving other items iconless.
-            // Under macOS 27's clean minimalist menu design rules: hide all icons so none show.
-            item.preferredImageVisibility = .hidden
+            let sel = Selector(("setPreferredImageVisibility:"))
+            if item.responds(to: sel) {
+                item.setValue(2, forKey: "preferredImageVisibility")
+            }
             item.image = nil
         } else {
             // On older macOS versions (< 27), show icons for all items consistently
